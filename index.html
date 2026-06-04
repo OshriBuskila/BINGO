@@ -215,9 +215,157 @@
       0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
+
+    /* Terms overlay */
+    #terms-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 20, 50, 0.97);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .terms-box {
+      background: linear-gradient(160deg, #0d2d52, #1B4F8A);
+      border: 2px solid #F26522;
+      border-radius: 20px;
+      padding: 30px 28px;
+      max-width: 480px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .terms-logo {
+      background: white;
+      border-radius: 10px;
+      padding: 8px 16px;
+      width: fit-content;
+      margin: 0 auto;
+    }
+
+    .terms-logo img { height: 44px; display: block; }
+
+    .terms-title {
+      color: #F26522;
+      font-size: 1.4rem;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .terms-body {
+      color: #c8d8ee;
+      font-size: 0.92rem;
+      line-height: 1.8;
+      background: rgba(0,0,0,0.25);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid rgba(242,101,34,0.2);
+    }
+
+    .terms-body li {
+      margin-bottom: 8px;
+      list-style: none;
+      padding-right: 4px;
+    }
+
+    .terms-body li::before {
+      content: '👉 ';
+    }
+
+    .terms-body .danger {
+      color: #ff6b6b;
+      font-weight: 700;
+    }
+
+    .terms-body .bold {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    #liar-msg {
+      display: none;
+      background: rgba(242, 101, 34, 0.15);
+      border: 2px solid #F26522;
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #F26522;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: center;
+      line-height: 1.6;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-6px); }
+      80%      { transform: translateX(6px); }
+    }
+
+    .terms-btn {
+      background: #F26522;
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+      width: 100%;
+    }
+
+    .terms-btn:hover { background: #d4521a; }
+
+    .terms-btn.secondary {
+      background: transparent;
+      border: 2px solid #F26522;
+      color: #F26522;
+    }
+
+    .terms-btn.secondary:hover { background: #F26522; color: white; }
   </style>
 </head>
 <body>
+
+  <!-- Terms overlay -->
+  <div id="terms-overlay">
+    <div class="terms-box">
+      <div class="terms-logo">
+        <img src="GIV LOGO.webp" alt="GIV Solutions" />
+      </div>
+      <div class="terms-title">📋 תקנון בינגו אילון</div>
+      <div class="terms-body">
+        <ul>
+          <li>המשחק פשוט: כל פעם שאילון אומר ביטוי שמופיע על הלוח שלך — לחץ על המשבצת.</li>
+          <li>מי שמסמן את <span class="bold">כל 16 המשבצות</span> ראשון — מנצח!</li>
+          <li>לכל שחקן יש לוח שונה ורנדומלי — זה חוקי ומותר.</li>
+          <li class="danger">🚨 חל איסור מוחלט לגלות לאילון שמתנהל משחק!!</li>
+          <li>מי שמגלה לאילון בטעות — <span class="danger">הורס את המשחק לכולם</span>, וזה יזכר לו <span class="bold">לדיראון עולם</span>. לנצח. ללא עוררין.</li>
+          <li>הניצחון נחשב רק כשצועקים <span class="bold">BINGO!</span> בקול.</li>
+          <li>בהצלחה, תהנו, ותשמרו על הסוד 🤫</li>
+        </ul>
+      </div>
+
+      <div id="liar-msg">
+        😂 שקרן! לא קראת כלום!<br>
+        עכשיו תקרא באמת לפני שאתה מאשר!
+      </div>
+
+      <button class="terms-btn" id="terms-btn-1" onclick="firstConfirm()">קראתי ומאשר את התקנון ✅</button>
+      <button class="terms-btn secondary" id="terms-btn-2" style="display:none" onclick="secondConfirm()">אוקיי אוקיי, קראתי באמת עכשיו. מאשר! 🤞</button>
+    </div>
+  </div>
 
   <div class="logo-wrap">
     <img src="GIV LOGO.webp" alt="GIV Solutions" />
@@ -244,6 +392,16 @@
   </div>
 
   <script>
+    function firstConfirm() {
+      document.getElementById('liar-msg').style.display = 'block';
+      document.getElementById('terms-btn-1').style.display = 'none';
+      document.getElementById('terms-btn-2').style.display = 'block';
+    }
+
+    function secondConfirm() {
+      document.getElementById('terms-overlay').style.display = 'none';
+    }
+
     const phrases = [
       'לא מאיימים על יונה עם יין',
       'זה שקוף לי',
