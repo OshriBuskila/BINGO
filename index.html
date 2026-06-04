@@ -148,6 +148,27 @@
       text-align: center;
     }
 
+    .win-images {
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .win-images img {
+      width: clamp(100px, 25vw, 200px);
+      animation: bounce 0.6s ease infinite alternate;
+    }
+
+    .win-images img:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-12px); }
+    }
+
     .confetti-piece {
       position: fixed;
       width: 10px;
@@ -187,6 +208,10 @@
   <div id="win-overlay">
     <div class="win-title">🎉 BINGO! 🎉</div>
     <p class="win-sub">כל הכבוד! סימנת את כל הלוח!</p>
+    <div class="win-images">
+      <img src="de8db74a-8a4d-49af-bc67-ce6029a7b4e4.webp" alt="אילון" />
+      <img src="7b91479c-5748-4acd-99ac-e0c932ee05bc.webp" alt="אילון" />
+    </div>
     <button class="btn" onclick="newBoard(); closeWin();">לוח חדש</button>
   </div>
 
