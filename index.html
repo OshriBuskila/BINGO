@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>בינגו של הצוות 🎉</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    h1 {
+      color: #f5c518;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      text-shadow: 0 0 20px rgba(245, 197, 24, 0.5);
+      letter-spacing: 2px;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: #a8b2d8;
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      width: min(90vw, 520px);
+    }
+
+    .cell {
+      background: rgba(255, 255, 255, 0.07);
+      border: 2px solid rgba(245, 197, 24, 0.25);
+      border-radius: 12px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+      cursor: pointer;
+      color: #e0e6f8;
+      font-size: clamp(0.6rem, 2vw, 0.85rem);
+      font-weight: 600;
+      line-height: 1.3;
+      transition: all 0.2s ease;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell:hover:not(.marked) {
+      background: rgba(255, 255, 255, 0.13);
+      border-color: rgba(245, 197, 24, 0.6);
+      transform: scale(1.03);
+    }
+
+    .cell.marked {
+      background: linear-gradient(135deg, #f5c518, #e6a817);
+      border-color: #f5c518;
+      color: #1a1a2e;
+      transform: scale(1.02);
+      box-shadow: 0 0 18px rgba(245, 197, 24, 0.6);
+    }
+
+    .cell.marked::after {
+      content: '✓';
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      opacity: 0.7;
+    }
+
+    .cell.pop {
+      animation: pop 0.3s ease;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.15); }
+      100% { transform: scale(1.02); }
+    }
+
+    .btn {
+      background: transparent;
+      border: 2px solid #f5c518;
+      color: #f5c518;
+      padding: 10px 28px;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      font-weight: 700;
+    }
+
+    .btn:hover {
+      background: #f5c518;
+      color: #1a1a2e;
+    }
+
+    /* Win overlay */
+    #win-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    #win-overlay.show { display: flex; }
+
+    .win-title {
+      font-size: clamp(3rem, 12vw, 6rem);
+      font-weight: 900;
+      color: #f5c518;
+      text-shadow: 0 0 40px rgba(245, 197, 24, 0.9);
+      animation: pulse 0.8s ease infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to   { transform: scale(1.08); }
+    }
+
+    .win-sub {
+      color: #e0e6f8;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      text-align: center;
+    }
+
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      animation: fall linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    .counter {
+      color: #a8b2d8;
+      font-size: 0.9rem;
+    }
+
+    .counter span {
+      color: #f5c518;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎯 בינגו סמנכ"ל</h1>
+  <p class="subtitle">סמן כל משבצת שהמנהל אומר את הביטוי. מי שמשלים את כל הלוח — צועק <strong>BINGO!</strong></p>
+
+  <p class="counter">סומנו: <span id="count">0</span> / 16</p>
+
+  <div class="board" id="board"></div>
+
+  <button class="btn" onclick="newBoard()">🔀 לוח חדש</button>
+
+  <div id="win-overlay">
+    <div class="win-title">🎉 BINGO! 🎉</div>
+    <p class="win-sub">כל הכבוד! סימנת את כל הלוח!</p>
+    <button class="btn" onclick="newBoard(); closeWin();">לוח חדש</button>
+  </div>
+
+  <script>
+    const phrases = [
+      'לא מאיימים על יונה עם יין',
+      'זה שקוף לי',
+      'נתיב שול עמוד תאורה',
+      'לעשות לב עם הידיים',
+      'אה כפרה',
+      'הכנה למזגן',
+      'גנרי',
+      'קמפוס',
+      'חייקה',
+      'נשמה',
+      'תוביל',
+      'כתפיסה',
+      'זה המשחק',
+      'לך תחפש',
+      'שועל',
+      'חי את החלום',
+      'בשיא שלי',
+      'פער',
+      'צחקיש'
+    ];
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function newBoard() {
+      const board = document.getElementById('board');
+      const selected = shuffle(phrases).slice(0, 16);
+      board.innerHTML = '';
+      selected.forEach((text, i) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = text;
+        cell.dataset.index = i;
+        cell.addEventListener('click', () => toggle(cell));
+        board.appendChild(cell);
+      });
+      updateCount();
+    }
+
+    function toggle(cell) {
+      cell.classList.toggle('marked');
+      if (cell.classList.contains('marked')) {
+        cell.classList.add('pop');
+        cell.addEventListener('animationend', () => cell.classList.remove('pop'), { once: true });
+      }
+      updateCount();
+      checkWin();
+    }
+
+    function updateCount() {
+      const marked = document.querySelectorAll('.cell.marked').length;
+      document.getElementById('count').textContent = marked;
+    }
+
+    function checkWin() {
+      const total = document.querySelectorAll('.cell').length;
+      const marked = document.querySelectorAll('.cell.marked').length;
+      if (marked === total) {
+        spawnConfetti();
+        setTimeout(() => {
+          document.getElementById('win-overlay').classList.add('show');
+        }, 400);
+      }
+    }
+
+    function closeWin() {
+      document.getElementById('win-overlay').classList.remove('show');
+    }
+
+    function spawnConfetti() {
+      const colors = ['#f5c518', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96e6a1', '#ffd93d'];
+      for (let i = 0; i < 80; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `
+          left: ${Math.random() * 100}vw;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          animation-duration: ${1.5 + Math.random() * 2}s;
+          animation-delay: ${Math.random() * 0.5}s;
+          width: ${6 + Math.random() * 8}px;
+          height: ${6 + Math.random() * 8}px;
+        `;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+      }
+    }
+
+    newBoard();
+  </script>
+</body>
+</html>
