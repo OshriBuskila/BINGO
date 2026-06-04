@@ -183,6 +183,16 @@
       100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
+    .warning {
+      color: #ff6b6b;
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      text-align: center;
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.35);
+      border-radius: 8px;
+      padding: 8px 18px;
+    }
+
     .counter {
       color: #a8b2d8;
       font-size: 0.9rem;
@@ -197,7 +207,8 @@
 <body>
 
   <h1>🎯 בינגו אילון</h1>
-  <p class="subtitle">סמן כל משבצת שהמנהל אומר את הביטוי. מי שמשלים את כל הלוח — צועק <strong>BINGO!</strong></p>
+  <p class="subtitle">סמן כל משבצת שאילון אומר את הביטוי. מי שמשלים את כל הלוח — צועק <strong>BINGO!</strong></p>
+  <p class="warning">🤫 <strong>אסור שאילון ידע שיש משחק!</strong> 🤫</p>
 
   <p class="counter">סומנו: <span id="count">0</span> / 16</p>
 
