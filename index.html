@@ -149,38 +149,6 @@
       color: #fff;
     }
 
-    /* יא שועל popup */
-    #shual-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.5);
-      background: linear-gradient(135deg, #F26522, #d4521a);
-      color: white;
-      font-size: clamp(1.6rem, 6vw, 2.8rem);
-      font-weight: 900;
-      padding: 20px 40px;
-      border-radius: 20px;
-      box-shadow: 0 8px 40px rgba(242,101,34,0.7);
-      z-index: 200;
-      pointer-events: none;
-      opacity: 0;
-      transition: none;
-      white-space: nowrap;
-    }
-
-    #shual-popup.show {
-      animation: shualPop 1.1s ease forwards;
-    }
-
-    @keyframes shualPop {
-      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(-6deg); }
-      20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
-      35%  { transform: translate(-50%, -50%) scale(0.95) rotate(-1deg); }
-      50%  { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-      75%  { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-      100% { opacity: 0; transform: translate(-50%, -60%) scale(0.9); }
-    }
 
     /* Win overlay */
     #win-overlay {
@@ -265,8 +233,6 @@
 
   <button class="btn" onclick="newBoard()">🔀 לוח חדש</button>
 
-  <div id="shual-popup">יא שועל!!!</div>
-
   <div id="win-overlay">
     <div class="win-title">🎉 BINGO! 🎉</div>
     <p class="win-sub">כל הכבוד! סימנת את כל הלוח!<br>סימן שאתה מכיר את אילון מצויין 😄</p>
@@ -324,23 +290,11 @@
       updateCount();
     }
 
-    let shualTimeout = null;
-
-    function showShual() {
-      const popup = document.getElementById('shual-popup');
-      popup.classList.remove('show');
-      void popup.offsetWidth; // reflow to restart animation
-      popup.classList.add('show');
-      clearTimeout(shualTimeout);
-      shualTimeout = setTimeout(() => popup.classList.remove('show'), 1100);
-    }
-
     function toggle(cell) {
       cell.classList.toggle('marked');
       if (cell.classList.contains('marked')) {
         cell.classList.add('pop-anim');
         cell.addEventListener('animationend', () => cell.classList.remove('pop-anim'), { once: true });
-        showShual();
       }
       updateCount();
       checkWin();
