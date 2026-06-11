@@ -401,6 +401,11 @@
 
     function secondConfirm() {
       document.getElementById('terms-overlay').style.display = 'none';
+      localStorage.setItem('bingo-terms-accepted', 'true');
+    }
+
+    if (localStorage.getItem('bingo-terms-accepted') === 'true') {
+      document.getElementById('terms-overlay').style.display = 'none';
     }
 
     const phrases = [
@@ -439,12 +444,18 @@
     }
 
     function newBoard() {
-      const board = document.getElementById('board');
       const selected = shuffle(phrases).slice(0, 16);
+      saveBoard(selected, []);
+      renderBoard(selected, []);
+    }
+
+    function renderBoard(selected, marked) {
+      const board = document.getElementById('board');
       board.innerHTML = '';
       selected.forEach((text, i) => {
         const cell = document.createElement('div');
         cell.className = 'cell';
+        if (marked.includes(i)) cell.classList.add('marked');
         cell.textContent = text;
         cell.dataset.index = i;
         cell.addEventListener('click', () => toggle(cell));
@@ -453,12 +464,34 @@
       updateCount();
     }
 
+    function saveBoard(selected, marked) {
+      localStorage.setItem('bingo-board', JSON.stringify({ selected, marked }));
+    }
+
+    function loadBoard() {
+      const raw = localStorage.getItem('bingo-board');
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
     function toggle(cell) {
       cell.classList.toggle('marked');
       if (cell.classList.contains('marked')) {
         cell.classList.add('pop-anim');
         cell.addEventListener('animationend', () => cell.classList.remove('pop-anim'), { once: true });
       }
+
+      const data = loadBoard();
+      const marked = [];
+      document.querySelectorAll('.cell').forEach(c => {
+        if (c.classList.contains('marked')) marked.push(Number(c.dataset.index));
+      });
+      saveBoard(data.selected, marked);
+
       updateCount();
       checkWin();
     }
@@ -501,7 +534,12 @@
       }
     }
 
-    newBoard();
+    const saved = loadBoard();
+    if (saved && saved.selected && saved.selected.length === 16) {
+      renderBoard(saved.selected, saved.marked || []);
+    } else {
+      newBoard();
+    }
   </script>
 </body>
 </html>
