@@ -71,7 +71,7 @@
 
     .board {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       width: min(92vw, 520px);
     }
@@ -376,7 +376,7 @@
   <p class="subtitle">סמן כל משבצת שאילון אומר את הביטוי. מי שמשלים את כל הלוח — צועק <strong>BINGO!</strong></p>
   <p class="warning">🤫 <strong>אסור שאילון ידע שיש משחק!</strong> 🤫</p>
 
-  <p class="counter">סומנו: <span id="count">0</span> / 16</p>
+  <p class="counter">סומנו: <span id="count">0</span> / 9</p>
 
   <div class="board" id="board"></div>
 
@@ -431,7 +431,10 @@
       'טוב דיו',
       'יא נקניק',
       'משהו',
-      'לייף (השם של הכלבה)'
+      'לייף (השם של הכלבה)',
+      'שכונה',
+      'סוס פוני',
+      'גועל נפש'
     ];
 
     function shuffle(arr) {
@@ -444,7 +447,7 @@
     }
 
     function newBoard() {
-      const selected = shuffle(phrases).slice(0, 16);
+      const selected = shuffle(phrases).slice(0, 9);
       saveBoard(selected, []);
       renderBoard(selected, []);
     }
@@ -535,7 +538,7 @@
     }
 
     const saved = loadBoard();
-    if (saved && saved.selected && saved.selected.length === 16) {
+    if (saved && saved.selected && saved.selected.length === 9) {
       renderBoard(saved.selected, saved.marked || []);
     } else {
       newBoard();
